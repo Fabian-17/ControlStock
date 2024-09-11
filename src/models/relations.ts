@@ -2,6 +2,8 @@ import { Role } from "./role";
 import { User } from "./user";
 import { Equipment } from "./equipment";
 import { Stock } from "./stock";
+import { Activity } from "./activity";
+import { ActivityDetails } from "./activityDetails";
 
 export const relations = (): void => {
     
@@ -25,5 +27,18 @@ export const relations = (): void => {
     Stock.belongsTo(Equipment, {
         foreignKey: 'equipmentId',
         as: 'equipment',
+    });
+
+    // tabla intermedia entre stock y activity
+    Stock.belongsToMany(Activity, {
+        through: ActivityDetails,
+        foreignKey: 'stockId',
+        as: 'activities',
+    });
+
+    Activity.belongsToMany(Stock, {
+        through: ActivityDetails,
+        foreignKey: 'activityId',
+        as: 'stocks',
     });
 };

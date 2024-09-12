@@ -69,4 +69,15 @@ export const relations = (): void => {
         foreignKey: 'organizationId',
         as: 'organization',
     });
+
+    // relación uno a muchos entre User y Activity
+    User.hasMany(Activity, {
+        foreignKey: 'userId',
+        as: 'activities',
+    });
+
+    Activity.belongsTo(User, {
+        foreignKey: 'userId',
+        as: 'user',
+    });
 };

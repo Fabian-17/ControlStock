@@ -5,4 +5,5 @@ export interface Config<T> {
     DB_PASSWORD: T;
     DB_HOST: T;
     DB_PORT: T;
+    SECRET_KEY: T;
 }

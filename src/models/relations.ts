@@ -4,6 +4,9 @@ import { Equipment } from "./equipment";
 import { Stock } from "./stock";
 import { Activity } from "./activity";
 import { ActivityDetails } from "./activityDetails";
+import { Organization } from "./organizations";
+import { Location } from "./location";
+import { Storage } from "./storage";
 
 export const relations = (): void => {
     
@@ -40,5 +43,30 @@ export const relations = (): void => {
         through: ActivityDetails,
         foreignKey: 'activityId',
         as: 'stocks',
+    });
+
+    // tabla intermedia entre equipment y location
+    Equipment.belongsToMany(Location, {
+        through: Storage,
+        foreignKey: 'equipmentId',
+        as: 'locations',
+    });
+
+    Location.belongsToMany(Equipment, {
+        through: Storage,
+        foreignKey: 'locationId',
+        as: 'equipments',
+    });
+
+    // relacion de uno a muchos entre Organization y Storage para que sirva de referencia entre compradores
+    // y de donde se obtiene el producto
+    Organization.hasMany(Storage, {
+        foreignKey: 'organizationId',
+        as: 'storages',
+    });
+
+    Storage.belongsTo(Organization, {
+        foreignKey: 'organizationId',
+        as: 'organization',
     });
 };

@@ -40,10 +40,11 @@ export class ActivityService {
   };
 
 
-  public async createActivity(activityData: Partial<Activity> ): Promise<Activity> {
+  public async createActivity(data: Partial<Activity>, userId: number ): Promise<Activity> {
     try {
-      const activity = await Activity.create(activityData);
-      return activity;
+      const { type, quantity, date } = data;
+      const activity = await Activity.create({ type, quantity, date, userId });
+    return activity;
     } catch (error: unknown) {
       throw new AppError('Error creating activity', 500);
     };

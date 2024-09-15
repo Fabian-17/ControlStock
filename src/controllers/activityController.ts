@@ -38,7 +38,12 @@ export class ActivityController {
   public async createActivity(req: Request, res: Response): Promise<void> {
     try {
       const { type, quantity, date } = req.body;
-      const activity = await activityService.createActivity({ type, quantity, date });
+      const userId = req.body.userId || (req as any).user?.id;  // Obtiene el userId
+      
+      if (!userId) {
+        throw new AppError('User ID is required', 400);
+      }
+      const activity = await activityService.createActivity({ type, quantity, date }, userId);
       res.status(201).json(activity);
     } catch (error: unknown) {
       if (error instanceof AppError) {

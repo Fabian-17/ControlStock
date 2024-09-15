@@ -1,13 +1,12 @@
-import { Model, DataTypes } from 'sequelize';
-import { sequelize } from '../database/configDB';
-
+import { Model, DataTypes } from "sequelize";
+import { sequelize } from "../database/configDB";
 
 export class Activity extends Model {
     declare id: number;
-    declare withdrawal: string;
-    declare added: Date;
-};
-
+    declare type: 'ADD' | 'WITHDRAWAL';  // Tipo de actividad
+    declare quantity: number;
+    declare date: Date;
+}
 
 Activity.init({
     id: {
@@ -15,17 +14,20 @@ Activity.init({
         autoIncrement: true,
         primaryKey: true,
     },
-    withdrawal: {
-        type: DataTypes.STRING,
+    type: {
+        type: DataTypes.ENUM('ADD', 'WITHDRAWAL'),
         allowNull: false,
     },
-    added: {
-        type: DataTypes.DATE,
+    quantity: {
+        type: DataTypes.INTEGER,
         allowNull: false,
+    },
+    date: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
     },
 }, {
     sequelize,
     modelName: 'activity',
     timestamps: false,
-},
-);
+});

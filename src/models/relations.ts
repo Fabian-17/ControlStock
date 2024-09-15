@@ -6,7 +6,7 @@ import { Activity } from "./activity";
 import { ActivityDetails } from "./activityDetails";
 import { Organization } from "./organizations";
 import { Location } from "./location";
-import { Storage } from "./storage";
+
 
 export const relations = (): void => {
     
@@ -26,46 +26,52 @@ export const relations = (): void => {
         foreignKey: 'equipmentId',
         as: 'stocks',
     });
-
+    
     Stock.belongsTo(Equipment, {
         foreignKey: 'equipmentId',
         as: 'equipment',
     });
 
-    // tabla intermedia entre stock y activity
-    Stock.belongsToMany(Activity, {
-        through: ActivityDetails,
-        foreignKey: 'stockId',
-        as: 'activities',
-    });
-
-    Activity.belongsToMany(Stock, {
-        through: ActivityDetails,
-        foreignKey: 'activityId',
+    // Relación de uno a muchos entre Location y Stock
+    Location.hasMany(Stock, {
+        foreignKey: 'locationId',
         as: 'stocks',
     });
 
-    // tabla intermedia entre equipment y location
-    Equipment.belongsToMany(Location, {
-        through: Storage,
-        foreignKey: 'equipmentId',
-        as: 'locations',
-    });
-
-    Location.belongsToMany(Equipment, {
-        through: Storage,
+    Stock.belongsTo(Location, {
         foreignKey: 'locationId',
-        as: 'equipments',
+        as: 'location',
     });
 
-    // relacion de uno a muchos entre Organization y Storage para que sirva de referencia entre compradores
-    // y de donde se obtiene el producto
-    Organization.hasMany(Storage, {
+    // Relación de uno a muchos entre Stock y ActivityDetails
+    Stock.hasMany(ActivityDetails, {
+        foreignKey: 'stockId',
+        as: 'activityDetails',
+    });
+
+    ActivityDetails.belongsTo(Stock, {
+        foreignKey: 'stockId',
+        as: 'stock',
+    });
+
+    // Relación de uno a muchos entre Stock y ActivityDetails
+    Stock.hasMany(ActivityDetails, {
+        foreignKey: 'stockId',
+        as: 'activityDetails',
+    });
+
+    ActivityDetails.belongsTo(Stock, {
+        foreignKey: 'stockId',
+        as: 'stock',
+    });
+
+    // Relación de uno a muchos entre Organization y ActivityDetails
+    Organization.hasMany(ActivityDetails, {
         foreignKey: 'organizationId',
-        as: 'storages',
+        as: 'activityDetails',
     });
 
-    Storage.belongsTo(Organization, {
+    ActivityDetails.belongsTo(Organization, {
         foreignKey: 'organizationId',
         as: 'organization',
     });

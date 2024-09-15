@@ -1,6 +1,8 @@
 import { User } from "../models/user";
 import { hashPassword, comparePassword } from "../utils/hash";
 import { AppError, handleError } from "../utils/errorService";
+import { Iuser } from "../interfaces/InterfaceUser";
+import { createJWT } from "../utils/jsonwebtoken";
 
 export class UserService {
 
@@ -14,7 +16,7 @@ export class UserService {
       };
 
       
-    public async getUserById(id: string): Promise<User> {
+    public async getUserById(id: number): Promise<User> {
         try {
           const user = await User.findByPk(id);
           if (!user) {
@@ -51,21 +53,18 @@ export class UserService {
         };
       };
     
-      public async deleteUser(id: string): Promise<void> {
-        try {
-          const user = await User.findByPk(id);
-          if (!user) {
-            throw new AppError('User not found', 404);
-          };
-          await user.destroy();
-        } catch (error: unknown) {
-          throw handleError(error);
-        };
+      public async deleteUser(id: string): Promise<boolean> {
+        const user = await User.findByPk(id);
+        if (!user) {
+          return false; // Usuario no encontrado
+        }
+        await user.destroy();
+        return true; // Usuario eliminado exitosamente
       };
 
-      public async login(username: string, password: string): Promise<User> {
+      public async login(userName: string, password: string): Promise<{ token: string, user: Iuser }> {
           try {
-          const user = await User.findOne({ where: { username } });
+          const user = await User.findOne({ where: { userName } });
           if (!user) {
               throw new AppError('User not found', 404);
           };
@@ -73,7 +72,10 @@ export class UserService {
           if (!isPasswordValid) {
               throw new AppError('Invalid password', 400);
           };
-          return user;
+          const payload: Iuser = { id: user.id, userName: user.userName };
+          const token = await createJWT(payload);
+
+          return { token, user: payload };
           } catch (error: unknown) {
           throw handleError(error);
           };

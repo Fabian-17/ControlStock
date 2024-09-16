@@ -37,13 +37,21 @@ export class ActivityController {
 
   public async createActivity(req: Request, res: Response): Promise<void> {
     try {
-      const { type, quantity, date } = req.body;
-      const userId = req.body.userId || (req as any).user?.id;  // Obtiene el userId
-      
+      const { type, quantity, date, organizationId, equipmentId, locationId } = req.body;
+      const userId = req.body.userId || (req as any).user?.id;
+
       if (!userId) {
         throw new AppError('User ID is required', 400);
       }
-      const activity = await activityService.createActivity({ type, quantity, date }, userId);
+
+      const activity = await activityService.createActivity(
+        { type, quantity, date },
+        userId,
+        organizationId,
+        equipmentId,
+        locationId
+      );
+      
       res.status(201).json(activity);
     } catch (error: unknown) {
       if (error instanceof AppError) {
@@ -58,7 +66,12 @@ export class ActivityController {
   public async updateActivity(req: Request, res: Response): Promise<void> {
     try {
       const { type, quantity, date } = req.body;
-      const activity = await activityService.updateActivity(Number(req.params.id), { type, quantity, date });
+      const equipmentId = req.body.equipmentId;
+      const activity = await activityService.updateActivity(
+        Number(req.params.id),
+        { type, quantity, date },
+        equipmentId
+      );
       res.json(activity);
     } catch (error: unknown) {
       if (error instanceof AppError) {

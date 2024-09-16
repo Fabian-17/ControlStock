@@ -3,9 +3,13 @@ import { UserService } from '../services/userService';
 import { config } from '../config/config';
 import { Request, Response, NextFunction } from 'express';
 
+interface AuthenticatedRequest extends Request {
+    user: { id: number };
+}
+
 const UserServices = new UserService();
 
-export const authenticateUser = async (req: Request, res: Response, next: NextFunction) => {
+export const authenticateUser = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     console.log("Middleware de autenticación ejecutado");
 
     try {
@@ -41,7 +45,7 @@ export const authenticateUser = async (req: Request, res: Response, next: NextFu
             return res.status(401).json({ message: 'Unauthorized: Invalid user' });
         }
 
-        req.user = { id: user.id, role: user.Role.name }; // Adjunta el ID y el rol del usuario al objeto de solicitud
+        req.user = { id: user.id }; // Adjunta el ID del usuario al objeto de solicitud
 
         next(); // Continúa al siguiente middleware o controlador
     } catch (error) {

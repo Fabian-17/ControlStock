@@ -1,4 +1,5 @@
 import { User } from "../models/user";
+import { Role } from "../models/role";
 import { hashPassword, comparePassword } from "../utils/hash";
 import { AppError, handleError } from "../utils/errorService";
 import { Iuser } from "../interfaces/InterfaceUser";
@@ -17,16 +18,22 @@ export class UserService {
 
       
     public async getUserById(id: number): Promise<User> {
-        try {
-          const user = await User.findByPk(id);
-          if (!user) {
-            throw new AppError('User not found', 404);
-          };
-          return user;
-        } catch (error: unknown) {
-          throw handleError(error);
-        };
-      };
+      try {
+        const user = await User.findByPk(id, {
+          include: [{
+            model: Role,
+            as: 'Role',
+            attributes: ['name']
+          }]
+        });
+        if (!user) {
+          throw new AppError('User not found', 404);
+        }
+        return user;
+      } catch (error: unknown) {
+        throw handleError(error);
+      }
+    }
     
       public async createUser(username: string, password: string): Promise<User> {
         try {

@@ -31,7 +31,8 @@ export class EquipmentController {
   public async createEquipment(req: Request, res: Response): Promise<void> {
     try {
       const { name, description, dateAdded } = req.body;
-      const equipment = await equipmentService.createEquipment({ name, description, dateAdded });
+      const { locationId, quantity } = req.body;
+      const equipment = await equipmentService.createEquipment({ name, description, dateAdded }, locationId, quantity);
       res.status(201).json(equipment);
     } catch (error: unknown) {
         const appError = handleError(error);

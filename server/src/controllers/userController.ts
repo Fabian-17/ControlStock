@@ -36,11 +36,11 @@ export class UserController {
 
   public async createUser(req: Request, res: Response): Promise<void> {
     try {
-      const { username, password } = req.body;
-      if (!username || !password) {
+      const { userName, password } = req.body;
+      if (!userName || !password) {
         throw new AppError('Username and password are required', 400);
       };
-      const user = await userService.createUser(username, password);
+      const user = await userService.createUser(userName, password);
       res.status(201).json(user);
     } catch (error: unknown) {
       const appError = handleError(error);
@@ -80,18 +80,18 @@ export class UserController {
 
   public async login(req: Request, res: Response): Promise<void> {
     try {
-      const { username, password } = req.body;
-      if (!username || !password) {
+      const { userName, password } = req.body;
+      if (!userName || !password) {
         throw new AppError('Username and password are required', 400);
       };
       
-      const user = await userService.login(username, password);
+      const user = await userService.login(userName, password);
       if (!user) {
         throw new AppError('Invalid credentials', 401);
       };
       
       // Crea el JWT token
-      const token = await createJWT({ id: user.user.id, username: user.user.userName });
+      const token = await createJWT({ id: user.user.id });
       
       // Respuesta con el token y la información del usuario
       res.json({ token, user });

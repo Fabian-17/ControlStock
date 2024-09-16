@@ -43,15 +43,15 @@ export const relations = (): void => {
         as: 'location',
     });
 
-    // Relación de uno a muchos entre Stock y ActivityDetails
-    Stock.hasMany(ActivityDetails, {
-        foreignKey: 'stockId',
+    // Relación de uno a muchos entre Activity y ActivityDetails
+    Activity.hasMany(ActivityDetails, {
+        foreignKey: 'activityId',
         as: 'activityDetails',
     });
 
-    ActivityDetails.belongsTo(Stock, {
-        foreignKey: 'stockId',
-        as: 'stock',
+    ActivityDetails.belongsTo(Activity, {
+        foreignKey: 'activityId',
+        as: 'activity',
     });
 
     // Relación de uno a muchos entre Stock y ActivityDetails
@@ -68,7 +68,7 @@ export const relations = (): void => {
     // Relación de uno a muchos entre Organization y ActivityDetails
     Organization.hasMany(ActivityDetails, {
         foreignKey: 'organizationId',
-        as: 'activityDetails',
+        as: 'organizationActivityDetails',
     });
 
     ActivityDetails.belongsTo(Organization, {

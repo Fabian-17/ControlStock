@@ -9,7 +9,13 @@ export class UserService {
 
     public async getUsers(): Promise<User[]> {
         try {
-          const users = await User.findAll();
+          const users = await User.findAll({
+            include: [{
+                model: Role,
+                as: 'role',
+                attributes: ['name']
+            }]
+        });
           return users;
         } catch (error: unknown) {
           throw handleError(error);
@@ -22,7 +28,7 @@ export class UserService {
         const user = await User.findByPk(id, {
           include: [{
             model: Role,
-            as: 'Role',
+            as: 'role',
             attributes: ['name']
           }]
         });
@@ -35,10 +41,15 @@ export class UserService {
       }
     }
     
-      public async createUser(username: string, password: string): Promise<User> {
+      public async createUser(userName: string, password: string): Promise<User> {
         try {
           const hashedPassword = await hashPassword(password);
-          const user = await User.create({ username, password: hashedPassword });
+           // Asigna un rol por defecto
+          const defaultRole = await Role.findOne({ where: { name: 'user' } });
+          if (!defaultRole) {
+            throw new AppError('Default role not found', 500);
+          };
+          const user = await User.create({ userName, password: hashedPassword, roleId: defaultRole.id });
           return user;
         } catch (error: unknown) {
           throw handleError(error);
@@ -79,7 +90,7 @@ export class UserService {
           if (!isPasswordValid) {
               throw new AppError('Invalid password', 400);
           };
-          const payload: Iuser = { id: user.id, userName: user.userName };
+          const payload: Iuser = { id: user.id };
           const token = await createJWT(payload);
 
           return { token, user: payload };

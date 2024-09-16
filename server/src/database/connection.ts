@@ -1,13 +1,16 @@
 import { sequelize } from './configDB';
 import { Sequelize } from 'sequelize';
 import { relations } from '../models/relations';
+import { seedRoles } from './seeds/roleSeed';
 
 class ConnectDataBase {
     private sequelize: Sequelize;
     private relations: () => void = relations;
+    private seedRoles: () => void = seedRoles;
     constructor() {
         this.sequelize = sequelize;
         this.relations();
+        this.seedRoles();
     };
 
     async connect() {

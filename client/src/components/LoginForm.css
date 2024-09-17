@@ -1,0 +1,46 @@
+.vh-100 {
+    height: 100vh;
+  }
+  
+  .container-fluid {
+    padding: 2rem;
+  }
+  
+  .h-custom {
+    height: 100%;
+  }
+  
+  .form-outline {
+    position: relative;
+  }
+  
+  .form-label {
+    font-size: 1rem;
+    color: #333;
+  }
+  
+  .form-control {
+    border-radius: 8px;
+  }
+  
+  .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+  }
+  
+  .btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #004085;
+  }
+  
+  .text-center {
+    text-align: center;
+  }
+  
+  .link-danger {
+    color: #dc3545;
+  }
+  
+  .link-danger:hover {
+    color: #c82333;
+  }  

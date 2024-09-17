@@ -8,13 +8,13 @@ const Navbar: React.FC = () => {
   const [isLogged, setIsLogged] = useState<boolean>(false);
 
   useEffect(() => {
-    // Verifica el estado de inicio de sesión desde el localStorage
-    const loggedIn = localStorage.getItem('isLoggedIn') === 'true';
-    setIsLogged(loggedIn);
+    // Verifica si existe un token en el localStorage
+    const token = localStorage.getItem('token');
+    setIsLogged(!!token); // Si el token existe, el usuario está logueado
   }, []);
 
   const handleSignInClick = () => {
-    navigate('/signin');
+    navigate('/registro');
   };
 
   const handleLogInClick = () => {
@@ -26,7 +26,7 @@ const Navbar: React.FC = () => {
   };
 
   const handleLogOutClick = async () => {
-    localStorage.setItem('isLoggedIn', 'false');
+    localStorage.removeItem('token'); // Remueve el token del localStorage
     setIsLogged(false);
     swal({
       title: "¡Cierre de sesión exitoso!",
@@ -40,46 +40,58 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg" style={{ backgroundColor: '#10132F', fontFamily: 'Krub', color: 'white' }}>
-      <div className="container-fluid">
-        <a className="navbar-brand d-flex align-items-center" href="#" style={{ color: 'white', fontFamily: 'Kufam', fontSize: '2em' }} onClick={handleHomeClick}>
-          Formotex 
-          <img src="img/*" alt="Logo" style={{ width: '50px', marginLeft: '10px' }} />
-        </a>
-        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-          <span className="navbar-toggler-icon" style={{ color: 'white' }}></span>
-        </button>
-          <div className="d-flex">
-            {isLogged ? (
-              <button
-                className="btn btn-success mx-2"
-                style={{ backgroundColor: '#49BA81', color: 'black', borderRadius: '40px', padding: '10px 20px', border: 'none', fontFamily: 'Krub', fontSize: '1.2em' }}
-                onClick={handleLogOutClick}
-              >
-                Cerrar Sesión
-              </button>
-            ) : (
-              <>
-                <button
-                  className="btn btn-success mx-2"
-                  style={{ backgroundColor: '#49BA81', color: 'black', borderRadius: '40px', padding: '10px 20px', border: 'none', fontFamily: 'Krub', fontSize: '1.2em' }}
-                  onClick={handleSignInClick}
-                >
-                  Sign In
-                </button>
-                <button
-                  className="btn btn-success mx-2"
-                  style={{ backgroundColor: '#49BA81', color: 'black', borderRadius: '40px', padding: '10px 20px', border: 'none', fontFamily: 'Krub', fontSize: '1.2em' }}
-                  onClick={handleLogInClick}
-                >
-                  Log In
-                </button>
-              </>
-            )}
-          </div>
-        </div>
+    <nav style={styles.navbar}>
+      <div style={styles.title} onClick={handleHomeClick}>
+        Formotex
+      </div>
+      <div style={styles.buttons}>
+        {isLogged ? (
+          <button style={styles.button} onClick={handleLogOutClick}>
+            Cerrar sesión
+          </button>
+        ) : (
+          <>
+            <button style={styles.button} onClick={handleSignInClick}>
+              Registrarse
+            </button>
+            <button style={styles.button} onClick={handleLogInClick}>
+              Iniciar sesión
+            </button>
+          </>
+        )}
+      </div>
     </nav>
   );
 };
+
+// Estilos en línea para simplificar el diseño minimalista
+const styles = {
+  navbar: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '10px 20px',
+    backgroundColor: '#f8f9fa',
+    borderBottom: '1px solid #dee2e6',
+  },
+  title: {
+    fontSize: '24px',
+    fontWeight: 'bold',
+    cursor: 'pointer',
+  },
+  buttons: {
+    display: 'flex',
+    gap: '10px',
+  },
+  button: {
+    padding: '8px 16px',
+    backgroundColor: '#007bff',
+    border: 'none',
+    color: '#fff',
+    borderRadius: '4px',
+    cursor: 'pointer',
+  },
+};
+
 
 export default Navbar;

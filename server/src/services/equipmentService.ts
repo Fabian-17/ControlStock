@@ -1,6 +1,6 @@
 import { Equipment } from "../models/equipment";
 import { Stock } from "../models/stock";
-import { AppError } from "../utils/errorService";
+import { AppError, handleError } from "../utils/errorService";
 
 
 export class EquipmentService {
@@ -14,8 +14,8 @@ export class EquipmentService {
           return { equipment, stock };
         }));
         return equipmentWithStock;
-      } catch (error: unknown) {
-        throw new AppError('Error getting equipment with stock', 500);
+      }  catch (error: unknown) {
+        throw handleError(error);
       };
     };
 
@@ -28,8 +28,8 @@ export class EquipmentService {
 
         const stock = await Stock.findAll({ where: { equipmentId: id } });
         return { equipment, stock };
-      } catch (error: unknown) {
-        throw new AppError('Error getting equipment with stock', 500);
+      }  catch (error: unknown) {
+        throw handleError(error);
       };
     };
 
@@ -44,24 +44,32 @@ export class EquipmentService {
           await Stock.create({ equipmentId: equipment.id, locationId, quantity });
       
           return equipment;
-        } catch (error) {
-        throw new AppError('Error creating equipment', 500);
-      };
+        }  catch (error: unknown) {
+          throw handleError(error);
+        };
     };
 
 
     // Actualiza un equipo y su stock
-    public async updateEquipment(id: number, data: Partial<Equipment>): Promise<Equipment | null> {
+    public async updateEquipment(id: number, data: Partial<Equipment>, stockQuantity?: number): Promise<Equipment | null> {
       try {
         const equipment = await Equipment.findByPk(id);
         if (!equipment) throw new AppError('Equipment not found', 404);
+    
+        // Actualiza la información del equipo
         await equipment.update(data);
-        await Stock.update({ equipmentId: id }, { where: { equipmentId: id } });
+    
+        // Se actualiza el stock si se proporciona una cantidad
+        if (stockQuantity !== undefined) {
+          await Stock.update({ quantity: stockQuantity }, { where: { equipmentId: id } });
+        };
+    
         return equipment;
-      } catch (error) {
-        throw new AppError('Error updating equipment', 500);
+      } catch (error: unknown) {
+        throw handleError(error);
       };
     };
+    
 
     // Elimina un equipo y su stock
     public async deleteEquipment(id: number): Promise<void> {
@@ -72,8 +80,8 @@ export class EquipmentService {
   
         // Eliminar el stock relacionado
         await Stock.destroy({ where: { equipmentId: id } });
-      } catch (error) {
-        throw new AppError('Error deleting equipment', 500);
+      }  catch (error: unknown) {
+        throw handleError(error);
       };
     };
     

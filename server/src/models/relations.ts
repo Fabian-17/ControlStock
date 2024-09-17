@@ -25,6 +25,7 @@ export const relations = (): void => {
     Equipment.hasMany(Stock, {
         foreignKey: 'equipmentId',
         as: 'stocks',
+        onDelete: 'CASCADE',
     });
     
     Stock.belongsTo(Equipment, {

@@ -43,14 +43,25 @@ export class EquipmentController {
 
   public async updateEquipment(req: Request, res: Response): Promise<void> {
     try {
-      const { name, description, dateAdded } = req.body;
-      const equipment = await equipmentService.updateEquipment(Number(req.params.id), { name, description, dateAdded });
+      
+      const { name, description, dateAdded, stockQuantity } = req.body;
+  
+      // Covierte el stockQuantity a un número si está definido
+      const stockQuantityNumber = stockQuantity !== undefined ? Number(stockQuantity) : undefined;
+  
+      // Llama al servicio para actualizar el equipo
+      const equipment = await equipmentService.updateEquipment(
+        Number(req.params.id), 
+        { name, description, dateAdded }, 
+        stockQuantityNumber
+      );
+  
       res.json(equipment);
     } catch (error: unknown) {
-        const appError = handleError(error);
-        res.status(appError.statusCode).json({ message: appError.message });
+      const appError = handleError(error);
+      res.status(appError.statusCode).json({ message: appError.message });
     };
-  };
+  };  
 
 
   public async deleteEquipment(req: Request, res: Response): Promise<void> {

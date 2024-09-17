@@ -8,7 +8,7 @@ type JwtPayload = string | object | Buffer;
 
 // Configuración de opciones para JWT
 const jwtOptions: SignOptions = {
-    expiresIn: '1h',
+    expiresIn: '24h',
 };
 
 // Función para crear JWT

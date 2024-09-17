@@ -1,0 +1,63 @@
+.home-page {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.home-page .header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.button-group .button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.button-group .button:hover {
+    background-color: #0056b3;
+}
+
+.error {
+    color: red;
+    text-align: center;
+}
+
+.equipment-list {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.equipment-list ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.equipment-list .list-item {
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+}
+
+.equipment-list .list-item .item-name {
+    margin: 0 0 10px;
+}
+
+.equipment-list .list-item .item-description {
+    margin: 0;
+}
+
+.equipment-list .list-item .item-date {
+    color: #666;
+}

@@ -10,8 +10,8 @@ const userController = new UserController();
 userRouter.get("/", userController.getUsers);
 userRouter.get("/:id", userController.getUserById);
 userRouter.post("/register", validator, userController.createUser);
-userRouter.put("/:id", authorizeRole, validator, userController.updateUser);
-userRouter.delete("/:id", authorizeRole, userController.deleteUser);
+userRouter.put("/:id", authenticateUser, authorizeRole('user'), validator, userController.updateUser);
+userRouter.delete("/:id", authenticateUser, authorizeRole('admin'), userController.deleteUser);
 userRouter.post("/login", userController.login);
 
 export { userRouter };

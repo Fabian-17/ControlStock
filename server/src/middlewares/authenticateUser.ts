@@ -2,14 +2,26 @@ import jwt from 'jsonwebtoken';
 import { UserService } from '../services/userService';
 import { config } from '../config/config';
 import { Request, Response, NextFunction } from 'express';
+import { AuthService } from '../services/authService';
 
-interface AuthenticatedRequest extends Request {
-    user: { id: number };
+type IUser = {
+    userName: string;
+    role: {
+        name: string;
+    };
+};
+
+declare global {
+    namespace Express {
+        interface Request {
+            user: IUser;
+        }
+    }
 }
 
 const UserServices = new UserService();
 
-export const authenticateUser = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+export const authenticateUser = async (req: Request, res: Response, next: NextFunction) => {
     console.log("Middleware de autenticación ejecutado");
 
     try {
@@ -21,31 +33,32 @@ export const authenticateUser = async (req: AuthenticatedRequest, res: Response,
 
         const token = authHeader.split(' ')[1]; // Extrae el token eliminando el prefijo 'Bearer'
 
+        if (!token) {
+            return res.status(401).json({ message: "Token is required" });
+          }    
+
         if (!config.SECRET_KEY) {
             return res.status(500).json({ message: 'Internal server error: Secret key not configured' });
         }
 
-        // Verificación del token
-        let decoded;
-        try {
-            decoded = jwt.verify(token, config.SECRET_KEY);
-        } catch (err) {
-            if (err instanceof jwt.TokenExpiredError) {
-                return res.status(401).json({ message: 'Unauthorized: Token has expired' });
-            } else if (err instanceof jwt.JsonWebTokenError) {
-                return res.status(401).json({ message: 'Unauthorized: Invalid token' });
-            } else {
-                return res.status(500).json({ message: 'Internal server error: Token verification failed' });
-            }
+        const { id } = await AuthService.verifyToken(token);
+
+        if (!id) {
+          return res.status(401).json({ message: "Invalid token" });
         }
-
-        const user = await UserServices.getUserById((decoded as jwt.JwtPayload).id);
-
+  
+        const user = await UserServices.getUserById(id);
+  
         if (!user) {
-            return res.status(401).json({ message: 'Unauthorized: Invalid user' });
+          return res.status(401).json({ message: "User not found" });
         }
-
-        req.user = { id: user.id }; // Adjunta el ID del usuario al objeto de solicitud
+  
+        req.user = {
+            userName: user.userName,
+            role: {
+                name: user.role.name,
+            },
+        };
 
         next(); // Continúa al siguiente middleware o controlador
     } catch (error) {

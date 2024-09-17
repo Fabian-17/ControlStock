@@ -49,6 +49,10 @@ export class UserService {
           if (!defaultRole) {
             throw new AppError('Default role not found', 500);
           };
+          const existingUser = await User.findOne({ where: { userName } });
+          if (existingUser) {
+            throw new AppError('User with that username already exists', 400);
+          }
           const user = await User.create({ userName, password: hashedPassword, roleId: defaultRole.id });
           return user;
         } catch (error: unknown) {
@@ -56,13 +60,17 @@ export class UserService {
         };
       };
     
-      public async updateUser(id: string, username: string, password: string): Promise<User> {
+      public async updateUser(id: string, userName: string, password: string): Promise<User> {
         try {
           const user = await User.findByPk(id);
           if (!user) {
             throw new AppError('User not found', 404);
           };
-          if (username) user.userName = username;
+          if (userName) user.userName = userName;
+          const existingUser = await User.findOne({ where: { userName } });
+          if (existingUser) {
+            throw new AppError('User with that username already exists', 400);
+          }
           if (password) user.password = await hashPassword(password);
           await user.save();
           return user;
@@ -82,7 +90,15 @@ export class UserService {
 
       public async login(userName: string, password: string): Promise<{ token: string, user: Iuser }> {
           try {
-          const user = await User.findOne({ where: { userName } });
+          const user = await User.findOne({
+            where: { userName },
+            include: [{
+                model: Role,
+                as: 'role',
+                attributes: ['name']
+            }]
+        });
+        
           if (!user) {
               throw new AppError('User not found', 404);
           };

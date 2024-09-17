@@ -50,11 +50,11 @@ export class UserController {
 
   public async updateUser(req: Request, res: Response): Promise<void> {
     try {
-      const { username, password } = req.body;
-      if (!username || !password) {
+      const { userName, password } = req.body;
+      if (!userName || !password) {
         throw new AppError('Username and password are required', 400);
       };
-      const user = await userService.updateUser(req.params.id, username, password);
+      const user = await userService.updateUser(req.params.id, userName, password);
       if (!user) {
         throw new AppError('User not found', 404);
       };

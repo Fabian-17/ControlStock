@@ -1,17 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import swal from 'sweetalert';
+import Swal from 'sweetalert2';
+import { useAuth } from '../hooks/AuthHook';
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
-  const [isLogged, setIsLogged] = useState<boolean>(false);
+  const { user, logout } = useAuth();
 
-  useEffect(() => {
-    // Verifica si existe un token en el localStorage
-    const token = localStorage.getItem('token');
-    setIsLogged(!!token); // Si el token existe, el usuario está logueado
-  }, []);
 
   const handleSignInClick = () => {
     navigate('/registro');
@@ -26,17 +22,13 @@ const Navbar: React.FC = () => {
   };
 
   const handleLogOutClick = async () => {
-    localStorage.removeItem('token'); // Remueve el token del localStorage
-    setIsLogged(false);
-    swal({
+    await logout();
+    Swal.fire({
       title: "¡Cierre de sesión exitoso!",
       text: "Serás redirigido a la página de inicio.",
       icon: "success",
-      timer: 2000,
     });
-    setTimeout(() => {
-      navigate('/');
-    }, 2000);
+    navigate('/');
   };
 
   return (
@@ -45,7 +37,7 @@ const Navbar: React.FC = () => {
         Formotex
       </div>
       <div style={styles.buttons}>
-        {isLogged ? (
+        {user?.isLogged ? (
           <button style={styles.button} onClick={handleLogOutClick}>
             Cerrar sesión
           </button>

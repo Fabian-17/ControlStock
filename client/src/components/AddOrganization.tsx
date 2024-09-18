@@ -88,7 +88,7 @@ const FormOrganization: React.FC = () => {
                             onChange={handleInputChange}
                         />
                     </div>
-                    <button type="submit">Agregar Ubicación</button>
+                    <button type="submit">Agregar Organización</button>
                 </form>
         </div>
     </div>

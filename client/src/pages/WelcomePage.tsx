@@ -6,7 +6,7 @@ const WelcomePage = () => {
     return (
         <>
             <Navbar />
-            <div className="container">
+            <div className="container-welcome">
                 <h1 className="text-center">Formotex</h1>
                 <div style={styles.containerImg}>
                     <img style={styles.image} src={Welcome} alt="Imagen de Bienvenida" />

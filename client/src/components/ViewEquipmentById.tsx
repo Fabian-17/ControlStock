@@ -62,6 +62,7 @@ const EquipmentDetails: React.FC = () => {
     }
 
     return (
+        <div className='equipment-details-container'>
         <div className="equipment-details-page">
             <h1>{equipment.name}</h1>
             <p>{equipment.description}</p>
@@ -80,6 +81,7 @@ const EquipmentDetails: React.FC = () => {
             ) : (
                 <p>No hay stock disponible para este equipo.</p>
             )}
+        </div>
         </div>
     );
 };

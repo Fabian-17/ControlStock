@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Home.css';
 
@@ -11,6 +12,7 @@ interface Equipment {
 const Home: React.FC = () => {
     const [equipments, setEquipments] = useState<Equipment[]>([]);
     const [error, setError] = useState<string | null>(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const token = localStorage.getItem('token')?.replace(/^"|"$/g, ''); // Elimina comillas alrededor del token;
@@ -26,13 +28,27 @@ const Home: React.FC = () => {
             }
         })
         .then(response => {
-            setEquipments(response.data);
+            console.log(response.data);
+            const equipmentData = response.data.map((item: any) => item.equipment);
+            setEquipments(equipmentData);
         })
         .catch(error => {
             setError('Error fetching equipment data.');
             console.error(error);
         });
     }, []);
+
+    const addOrganization = () => {
+        navigate('/addOrganization');
+    };
+
+    const addEquipment = () => {
+        navigate('/addEquipment');
+    };
+
+    const addLocation = () => {
+        navigate('/home/addLocation');
+    };
     
 
     return (
@@ -42,15 +58,15 @@ const Home: React.FC = () => {
             </div>
             {error && <p className="error">{error}</p>}
             <div className="button-group">
-                <button className="button" onClick={() => alert('Add Organization clicked')}>Agregar Organización</button>
-                <button className="button" onClick={() => alert('Add Equipment clicked')}>Agregar Equipos</button>
-                <button className="button" onClick={() => alert('Add Location clicked')}>Agregar Ubicaciones</button>
+                <button className="button" onClick={addOrganization}>Agregar Organización</button>
+                <button className="button" onClick={addEquipment}>Agregar Equipos</button>
+                <button className="button" onClick={addLocation}>Agregar Ubicaciones</button>
             </div>
             <div className="equipment-list">
                 {equipments.length > 0 ? (
                     <ul>
-                        {equipments.map((equipment, index) => (
-                            <li key={index} className="list-item">
+                        {equipments.map((equipment) => (
+                            <li key={equipment.id} className="list-item">
                                 <h2 className="item-name">{equipment.name}</h2>
                                 <p className="item-description">{equipment.description}</p>
                             </li>

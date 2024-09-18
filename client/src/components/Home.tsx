@@ -46,6 +46,10 @@ const Home: React.FC = () => {
         return equipment;
     });
 
+    const handleEquipmentClick = (id: number) => {
+    navigate(`/home/equipment/${id}`);
+    };
+
     const addOrganization = () => {
         navigate('/home/addOrganization');
     };
@@ -74,10 +78,10 @@ const Home: React.FC = () => {
                 {equipments.length > 0 ? (
                     <ul>
                         {equipments.map((equipment) => (
-                            <li key={equipment.id} className="list-item">
+                            <li key={equipment.id} className="list-item" onClick={() => handleEquipmentClick(equipment.id)}>
                                 <h2 className="item-name">{equipment.name}</h2>
                                 <p className="item-description">{equipment.description}</p>
-                                <p className='item-date'>fecha en la que se agrego - {equipment.dateAdded}</p>
+                                <p className='item-date'>Fecha en la que se agregó - {equipment.dateAdded}</p>
                             </li>
                         ))}
                     </ul>

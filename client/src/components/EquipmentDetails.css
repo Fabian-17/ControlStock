@@ -1,0 +1,87 @@
+.equipment-details-page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif; 
+    color: #333;
+}
+
+
+.equipment-details-page h1 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #2c3e50;
+    text-align: center;
+}
+
+.equipment-details-page p {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+
+.equipment-details-page h2 {
+    font-size: 24px;
+    color: #34495e;
+    margin-bottom: 10px;
+}
+
+
+.equipment-details-page ul {
+    list-style-type: none; 
+    padding: 0;
+}
+
+.equipment-details-page li {
+    background-color: #fff; 
+    margin-bottom: 10px;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.equipment-details-page li p {
+    margin: 0;
+    font-size: 16px;
+}
+
+.equipment-details-page li p:first-child {
+    font-weight: bold;
+    color: #27ae60;
+}
+
+.equipment-details-page li p:last-child {
+    font-style: italic;
+    color: #95a5a6; 
+}
+
+
+@media (max-width: 600px) {
+    .equipment-details-page {
+        padding: 15px;
+    }
+
+    .equipment-details-page h1 {
+        font-size: 24px;
+    }
+
+    .equipment-details-page h2 {
+        font-size: 20px;
+    }
+
+    .equipment-details-page li {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .equipment-details-page li p {
+        font-size: 14px;
+    }
+}

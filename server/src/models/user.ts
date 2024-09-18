@@ -1,5 +1,6 @@
 import { Model, DataTypes } from "sequelize";
 import { sequelize } from "../database/configDB";
+import { Role } from "./role";
 
 
 export class User extends Model {
@@ -30,7 +31,7 @@ User.init({
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: 'role',
+            model: 'roles',
             key: 'id',
         },
     },

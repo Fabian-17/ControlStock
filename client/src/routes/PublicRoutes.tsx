@@ -3,6 +3,7 @@ import WelcomePage from "../pages/WelcomePage";
 import { PublicRouteConfig } from "./PublicRouteConfig";
 import Register from "../pages/RegisterPage";
 import Login from "../pages/LoginPage";
+import NotFoundPage from "../pages/NotFoundPage";
 
 
 const PublicRoutes = () => {
@@ -16,6 +17,9 @@ const PublicRoutes = () => {
             } />
             <Route path="/login" element={
                 <PublicRouteConfig element={<Login />} />
+            } />
+            <Route path="*" element={
+                <PublicRouteConfig element={<NotFoundPage />} />
             } />
         </Routes>
     );

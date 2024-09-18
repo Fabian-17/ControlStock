@@ -3,6 +3,7 @@ import HomePage from "../pages/HomePage";
 import AddLocationPage from "../pages/AddLocationPage";
 import AddEquipment from "../pages/AddEquipmentPage";
 import AddOrganizationPage from "../pages/AddOrganizationPage";
+import NotFoundPage from "../pages/NotFoundPage";
 import { PrivateRouteConfig } from "./PrivateRouteConfig";
 
 
@@ -20,6 +21,9 @@ const PrivateRoutes = () => {
             } />
             <Route path="/addOrganization" element={
                 <PrivateRouteConfig element={<AddOrganizationPage />} />
+            } />
+            <Route path="*" element={
+                <PrivateRouteConfig element={<NotFoundPage />} />
             } />
         </Routes>
     );

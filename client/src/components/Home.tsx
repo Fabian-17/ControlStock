@@ -7,6 +7,7 @@ interface Equipment {
     id: number;
     name: string;
     description: string;
+    dateAdded: string;
 }
 
 const Home: React.FC = () => {
@@ -38,12 +39,19 @@ const Home: React.FC = () => {
         });
     }, []);
 
+    equipments.forEach((equipment) => {
+        const date = new Date(equipment.dateAdded);
+        equipment.dateAdded = date.toLocaleDateString();
+
+        return equipment;
+    });
+
     const addOrganization = () => {
-        navigate('/addOrganization');
+        navigate('/home/addOrganization');
     };
 
     const addEquipment = () => {
-        navigate('/addEquipment');
+        navigate('/home/addEquipment');
     };
 
     const addLocation = () => {
@@ -69,6 +77,7 @@ const Home: React.FC = () => {
                             <li key={equipment.id} className="list-item">
                                 <h2 className="item-name">{equipment.name}</h2>
                                 <p className="item-description">{equipment.description}</p>
+                                <p className='item-date'>fecha en la que se agrego - {equipment.dateAdded}</p>
                             </li>
                         ))}
                     </ul>

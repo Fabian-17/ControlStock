@@ -18,9 +18,15 @@ interface Equipment {
     stock: Stock[];
 }
 
+interface Location {
+    id: number;
+    name: string;
+}
+
 const EquipmentDetails: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const [equipment, setEquipment] = useState<Equipment | null>(null);
+    const [locations, setLocations] = useState<Location[]>([]);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
@@ -51,8 +57,33 @@ const EquipmentDetails: React.FC = () => {
             setError('Error fetching equipment data.');
             console.error(error);
         });
+
+        axios.get(`http://localhost:4000/locations`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        })
+        .then(response => {
+            console.log('Response from /locations:', response.data);
+            const locationsData = response.data;
+            if (Array.isArray(locationsData)) {
+                setLocations(locationsData);
+            } else {
+                setError('No se encontraron ubicaciones.');
+                console.error('Formato inesperado en la respuesta:', response.data);
+            }
+        })
     }, [id]);
 
+    const getLocationName = (locationId: number) => {
+        if (!locations || locations.length === 0) {
+            return 'Cargando ubicación...';
+        }
+    
+        const location = locations.find(loc => loc.id === locationId);
+        return location ? location.name : 'Ubicación desconocida';
+    };
+    
     if (error) {
         return <p>{error}</p>;
     }
@@ -74,7 +105,7 @@ const EquipmentDetails: React.FC = () => {
                     {equipment.stock.map((stockItem) => (
                         <li key={stockItem.id}>
                             <p>Cantidad: {stockItem.quantity}</p>
-                            <p>Ubicación: {stockItem.locationId}</p>
+                            <p>Ubicación: {getLocationName(stockItem.locationId)}</p>
                         </li>
                     ))}
                 </ul>

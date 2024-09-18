@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
+import React, { useState, ChangeEvent, useEffect, FormEvent } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import './EquipmentForm.css';
@@ -8,11 +8,8 @@ interface Location {
   name: string;
 }
 
-interface EquipmentFormProps {
-  onSubmit: (equipmentData: { name: string, description: string, dateAdded: string, locationId: number, quantity: number }) => void;
-}
 
-const EquipmentForm: React.FC<EquipmentFormProps> = ({ onSubmit }) => {
+const EquipmentForm: React.FC = () => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [dateAdded, setDateAdded] = useState('');
@@ -21,92 +18,91 @@ const EquipmentForm: React.FC<EquipmentFormProps> = ({ onSubmit }) => {
   const [locations, setLocations] = useState<Location[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch locations when component mounts
-  useEffect(() => {
-    const token = localStorage.getItem('token')?.replace(/^"|"$/g, ''); // Elimina comillas alrededor del token
-
-    if (!token) {
-      setError('No token found. Please log in.');
-      Swal.fire({
-        icon: 'error',
-        title: 'Authentication Error',
-        text: 'No token found. Please log in.',
-      });
-      return;
-    }
-
-    axios.get('http://localhost:4000/locations', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then(response => {
-        setLocations(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching locations', error);
+    // Fetch locations when component mounts
+    useEffect(() => {
+      const token = localStorage.getItem('token')?.replace(/^"|"$/g, ''); // Elimina comillas alrededor del token
+  
+      if (!token) {
+        setError('No token found. Please log in.');
         Swal.fire({
           icon: 'error',
-          title: 'Error fetching locations',
-          text: 'There was an issue loading locations. Please try again later.',
+          title: 'Authentication Error',
+          text: 'No token found. Please log in.',
         });
-      });
-  }, []);
-
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    if (locationId === null) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Missing Location',
-        text: 'Please select a location before submitting.',
-      });
-      return;
-    }
-
-    const token = localStorage.getItem('token')?.replace(/^"|"$/g, ''); // Elimina comillas alrededor del token
-
-    if (!token) {
-      setError('No token found. Please log in.');
-      Swal.fire({
-        icon: 'error',
-        title: 'Authentication Error',
-        text: 'No token found. Please log in.',
-      });
-      return;
-    }
-
-    const equipmentData = { name, description, dateAdded, locationId, quantity };
-
-    axios.post('http://localhost:4000/equipments', equipmentData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then(response => {
-        onSubmit(response.data);
-        Swal.fire({
-          icon: 'success',
-          title: 'Equipment Added',
-          text: 'The equipment was successfully added!',
-        });
-
-        // Reset form
-        setName('');
-        setDescription('');
-        setDateAdded('');
-        setQuantity(0);
-        setLocationId(null);
+        return;
+      }
+  
+      axios.get('http://localhost:4000/locations', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
-      .catch(error => {
-        console.error('Error adding equipment', error);
+        .then(response => {
+          setLocations(response.data);
+        })
+        .catch(error => {
+          console.error('Error fetching locations', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error fetching locations',
+            text: 'There was an issue loading locations. Please try again later.',
+          });
+        });
+    }, []);
+  
+    const handleSubmit = (e: FormEvent) => {
+      e.preventDefault();
+      if (locationId === null) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Missing Location',
+          text: 'Please select a location before submitting.',
+        });
+        return;
+      }
+  
+      const token = localStorage.getItem('token')?.replace(/^"|"$/g, ''); // Elimina comillas alrededor del token
+  
+      if (!token) {
+        setError('No token found. Please log in.');
         Swal.fire({
           icon: 'error',
-          title: 'Error adding equipment',
-          text: 'There was an issue adding the equipment. Please try again.',
+          title: 'Authentication Error',
+          text: 'No token found. Please log in.',
         });
-      });
-  };
+        return;
+      }
+  
+      const equipmentData = { name, description, dateAdded, locationId, quantity };
+  
+      axios.post('http://localhost:4000/equipments', equipmentData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then(response => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Equipment Added',
+            text: 'The equipment was successfully added!',
+          });
+  
+          // Reset form
+          setName('');
+          setDescription('');
+          setDateAdded('');
+          setQuantity(0);
+          setLocationId(null);
+        })
+        .catch(error => {
+          console.error('Error adding equipment', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error adding equipment',
+            text: 'There was an issue adding the equipment. Please try again.',
+          });
+        });
+    };
 
   return (
     <form onSubmit={handleSubmit} className="equipment-form">
